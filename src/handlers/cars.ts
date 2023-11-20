@@ -19,3 +19,13 @@ export const createCar = async (req, res) => {
 
   res.json({ data: car })
 }
+
+export const deleteCar = async (req, res) => {
+  const car = await prisma.car.delete({
+    where: {
+      id: req.params.id,
+    },
+  })
+
+  res.json({ data: car })
+}

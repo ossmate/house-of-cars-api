@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 
-import { createCar, getCars } from './handlers/cars'
+import { createCar, deleteCar, getCars } from './handlers/cars'
 import { inputErrorsHandler } from './middlewares/inputErrorsHandler'
 
 const router = Router()
@@ -18,5 +18,7 @@ router.post(
   inputErrorsHandler,
   createCar
 )
+
+router.delete('/cars/:id', deleteCar)
 
 export default router
