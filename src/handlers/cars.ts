@@ -29,3 +29,26 @@ export const deleteCar = async (req, res) => {
 
   res.json({ data: car })
 }
+
+export const updateCar = async (req, res) => {
+  const carToUpdate = await prisma.car.findUnique({
+    where: {
+      id: req.body.id,
+    },
+  })
+
+  const updatedCar = await prisma.car.update({
+    where: {
+      id: req.body.id,
+    },
+    data: {
+      brand: req.body.brand || carToUpdate.brand,
+      model: req.body.model || carToUpdate.model,
+      generation: req.body.generation || carToUpdate.generation,
+      engine: req.body.engine || carToUpdate.engine,
+      price: req.body.price || carToUpdate.price,
+    },
+  })
+
+  res.json({ data: updatedCar })
+}
