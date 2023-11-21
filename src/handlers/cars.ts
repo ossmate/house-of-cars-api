@@ -1,7 +1,11 @@
 import prisma from '../db'
 
 export const getCars = async (req, res) => {
-  const cars = await prisma.car.findMany()
+  const cars = await prisma.car.findMany({
+    where: {
+      isHighlighted: req.body?.onlyHighlighted,
+    },
+  })
 
   res.json({ data: cars })
 }
@@ -47,6 +51,7 @@ export const updateCar = async (req, res) => {
       generation: req.body.generation || carToUpdate.generation,
       engine: req.body.engine || carToUpdate.engine,
       price: req.body.price || carToUpdate.price,
+      isHighlighted: req.body.isHighlighted || carToUpdate.isHighlighted,
     },
   })
 
