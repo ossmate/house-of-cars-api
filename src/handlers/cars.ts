@@ -1,9 +1,11 @@
 import prisma from '../db'
 
 export const getCars = async (req, res) => {
+  const onlyHighlighted = req.query.onlyHighlighted === 'true'
+
   const cars = await prisma.car.findMany({
     where: {
-      isHighlighted: req.body?.onlyHighlighted,
+      isHighlighted: onlyHighlighted,
     },
   })
 
