@@ -3,6 +3,7 @@ import { body } from 'express-validator'
 
 import { createCar, deleteCar, getCars, updateCar } from './handlers/cars'
 import { inputErrorsHandler } from './middlewares/inputErrorsHandler'
+import { createBrand, getBrands } from './handlers/brands'
 
 const router = Router()
 
@@ -22,5 +23,9 @@ router.post(
 router.delete('/cars/:id', deleteCar)
 
 router.put('/cars', updateCar)
+
+router.get('/brands', getBrands)
+
+router.post('/brands', createBrand)
 
 export default router
