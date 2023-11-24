@@ -26,6 +26,12 @@ router.put('/cars', updateCar)
 
 router.get('/brands', getBrands)
 
-router.post('/brands', createBrand)
+router.post(
+  '/brands',
+  body('name').exists().isString(),
+  body('imageUrl').exists().isString(),
+  inputErrorsHandler,
+  createBrand
+)
 
 export default router
