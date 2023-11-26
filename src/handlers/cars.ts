@@ -13,7 +13,7 @@ export const getCars = async (req, res) => {
 }
 
 export const getCar = async (req, res) => {
-  const car = await prisma.car.findMany({
+  const car = await prisma.car.findUnique({
     where: {
       id: req.params.id,
     },
