@@ -1,13 +1,21 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 
-import { createCar, deleteCar, getCars, updateCar } from './handlers/cars'
+import {
+  createCar,
+  deleteCar,
+  getCar,
+  getCars,
+  updateCar,
+} from './handlers/cars'
 import { inputErrorsHandler } from './middlewares/inputErrorsHandler'
 import { createBrand, getBrands } from './handlers/brands'
 
 const router = Router()
 
 router.get('/cars', getCars)
+
+router.get('/cars/:id', getCar)
 
 router.post(
   '/cars',

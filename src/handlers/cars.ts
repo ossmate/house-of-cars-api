@@ -12,6 +12,16 @@ export const getCars = async (req, res) => {
   res.json({ data: cars })
 }
 
+export const getCar = async (req, res) => {
+  const car = await prisma.car.findMany({
+    where: {
+      id: req.params.id,
+    },
+  })
+
+  res.json({ data: car })
+}
+
 export const createCar = async (req, res) => {
   const car = await prisma.car.create({
     data: {
