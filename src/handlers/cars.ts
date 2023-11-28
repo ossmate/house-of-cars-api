@@ -37,6 +37,16 @@ export const createCar = async (req, res) => {
 }
 
 export const deleteCar = async (req, res) => {
+  const cars = await prisma.car.findMany()
+
+  const foundCar = cars.find(({ id }) => id === req.params.id)
+
+  if (!foundCar) {
+    return res
+      .status(400)
+      .json({ message: `Car with id ${req.params.id} not found.` })
+  }
+
   const car = await prisma.car.delete({
     where: {
       id: req.params.id,
