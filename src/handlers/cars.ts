@@ -3,13 +3,13 @@ import prisma from '../db'
 export const getCars = async (req, res) => {
   const onlyHighlighted = req.query.onlyHighlighted === 'true'
 
-  const cars = await prisma.car.findMany({
+  const data = await prisma.car.findMany({
     where: {
       isHighlighted: onlyHighlighted,
     },
   })
 
-  res.json({ data: cars })
+  res.json({ data })
 }
 
 export const getCar = async (req, res) => {
