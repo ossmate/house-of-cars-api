@@ -12,16 +12,22 @@ datasource db {
 
 model Car {
   id String @id @default(uuid())
-  brand String
+  createdAt DateTime @default(now())
+
+  brandId String
+  brand Brand @relation(fields: [brandId], references: [id])
   model String
   generation String
   engine String
   price Float
   isHighlighted Boolean @default(false)
+
+  @@unique([id, brandId])
 }
 
 model Brand {
   id String @id @default(uuid())
   name String
   imageUrl String
+  cars Car[]
 }

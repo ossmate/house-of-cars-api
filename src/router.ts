@@ -19,11 +19,12 @@ router.get('/cars/:id', getCar)
 
 router.post(
   '/cars',
-  body('brand').exists().isString(),
+  body('brandId').exists().isString(),
   body('model').exists().isString(),
   body('generation').exists().isString(),
   body('engine').exists().isString(),
   body('price').exists().isNumeric(),
+  body('isHighlighted').isBoolean().default(false),
   inputErrorsHandler,
   createCar
 )

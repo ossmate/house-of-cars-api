@@ -7,6 +7,9 @@ export const getCars = async (req, res) => {
     where: {
       isHighlighted: onlyHighlighted,
     },
+    include: {
+      brand: true,
+    },
   })
 
   res.json({ data })
@@ -17,6 +20,9 @@ export const getCar = async (req, res) => {
     where: {
       id: req.params.id,
     },
+    include: {
+      brand: true,
+    },
   })
 
   res.json({ data: car })
@@ -25,11 +31,15 @@ export const getCar = async (req, res) => {
 export const createCar = async (req, res) => {
   const car = await prisma.car.create({
     data: {
-      brand: req.body.brand,
+      brandId: req.body.brandId,
       model: req.body.model,
       generation: req.body.generation,
       engine: req.body.engine,
       price: req.body.price,
+      isHighlighted: req.body.isHighlighted,
+    },
+    include: {
+      brand: true,
     },
   })
 
@@ -68,7 +78,7 @@ export const updateCar = async (req, res) => {
       id: req.body.id,
     },
     data: {
-      brand: req.body.brand || carToUpdate.brand,
+      brand: req.body.brand || carToUpdate.brandId,
       model: req.body.model || carToUpdate.model,
       generation: req.body.generation || carToUpdate.generation,
       engine: req.body.engine || carToUpdate.engine,
