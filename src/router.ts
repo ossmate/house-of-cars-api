@@ -9,7 +9,7 @@ import {
   updateCar,
 } from './handlers/cars'
 import { inputErrorsHandler } from './middlewares/inputErrorsHandler'
-import { createBrand, getBrands } from './handlers/brands'
+import { createBrand, getBrands, updateBrand } from './handlers/brands'
 
 const router = Router()
 
@@ -42,5 +42,7 @@ router.post(
   inputErrorsHandler,
   createBrand
 )
+
+router.put('/brands', updateBrand)
 
 export default router

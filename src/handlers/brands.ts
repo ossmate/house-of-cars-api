@@ -16,3 +16,24 @@ export const createBrand = async (req, res) => {
 
   res.json({ data })
 }
+
+export const updateBrand = async (req, res) => {
+  const brandToUpdate = await prisma.brand.findUnique({
+    where: {
+      id: req.body.id,
+    },
+  })
+
+  const updatedBrand = await prisma.brand.update({
+    where: {
+      id: req.body.id,
+    },
+    data: {
+      ...brandToUpdate,
+      name: req.body.name || brandToUpdate.name,
+      imageUrl: req.body.imageUrl || brandToUpdate.imageUrl,
+    },
+  })
+
+  res.json({ data: updatedBrand })
+}
