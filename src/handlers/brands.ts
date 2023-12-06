@@ -37,3 +37,21 @@ export const updateBrand = async (req, res) => {
 
   res.json({ data: updatedBrand })
 }
+
+export const deleteBrand = async (req, res) => {
+  const brands = await prisma.brand.findMany()
+
+  const foundBrand = brands.find(({ id }) => id === req.params.id)
+
+  if (!foundBrand) {
+    return res.status(400).json({ message: `Brand ${req.params.id} not found` })
+  }
+
+  const brand = await prisma.brand.delete({
+    where: {
+      id: req.params.id,
+    },
+  })
+
+  res.json({ data: brand })
+}

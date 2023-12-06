@@ -9,7 +9,12 @@ import {
   updateCar,
 } from './handlers/cars'
 import { inputErrorsHandler } from './middlewares/inputErrorsHandler'
-import { createBrand, getBrands, updateBrand } from './handlers/brands'
+import {
+  createBrand,
+  deleteBrand,
+  getBrands,
+  updateBrand,
+} from './handlers/brands'
 
 const router = Router()
 
@@ -44,5 +49,7 @@ router.post(
 )
 
 router.put('/brands', updateBrand)
+
+router.delete('/brands/:id', deleteBrand)
 
 export default router
