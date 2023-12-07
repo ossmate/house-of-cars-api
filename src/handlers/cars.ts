@@ -6,6 +6,7 @@ export const getCars = async (req, res) => {
   const data = await prisma.car.findMany({
     where: {
       isHighlighted: onlyHighlighted,
+      brandId: req.query.brandId,
     },
     include: {
       brand: true,
