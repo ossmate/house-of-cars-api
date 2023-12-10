@@ -1,9 +1,22 @@
 import prisma from '../db'
 
 export const getBrands = async (req, res) => {
-  const data = await prisma.brand.findMany()
+  const data = await prisma.brand.findMany({
+    include: {
+      _count: {
+        select: { cars: true },
+      },
+    },
+  })
 
-  res.json({ data })
+  const transformedData = data.map(({ id, name, imageUrl, _count }) => ({
+    id,
+    name,
+    imageUrl,
+    carsCount: _count.cars,
+  }))
+
+  res.json({ data: transformedData })
 }
 
 export const createBrand = async (req, res) => {
