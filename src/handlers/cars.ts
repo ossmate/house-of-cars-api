@@ -1,13 +1,24 @@
 import prisma from '../db'
 
+interface WhereClause {
+  isHighlighted?: boolean
+  brandId?: string
+}
+
 export const getCars = async (req, res) => {
-  const onlyHighlighted = req.query.onlyHighlighted === 'true'
+  const onlyHighlightedParam = req.query.onlyHighlighted
+  let whereClause: WhereClause = {}
+
+  if (onlyHighlightedParam === 'true' || onlyHighlightedParam === 'false') {
+    whereClause.isHighlighted = onlyHighlightedParam === 'true'
+  }
+
+  if (req.query.brandId) {
+    whereClause.brandId = req.query.brandId
+  }
 
   const data = await prisma.car.findMany({
-    where: {
-      isHighlighted: onlyHighlighted,
-      brandId: req.query.brandId,
-    },
+    where: whereClause,
     include: {
       brand: true,
     },
