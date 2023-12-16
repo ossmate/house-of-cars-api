@@ -21,6 +21,7 @@ model Car {
   engine String
   price Float
   isHighlighted Boolean @default(false)
+  imageUrl String @default("")
 
   @@unique([id, brandId])
 }

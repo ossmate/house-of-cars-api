@@ -49,6 +49,7 @@ export const createCar = async (req, res) => {
       engine: req.body.engine,
       price: req.body.price,
       isHighlighted: req.body.isHighlighted,
+      imageUrl: req.body.imageUrl,
     },
     include: {
       brand: true,
