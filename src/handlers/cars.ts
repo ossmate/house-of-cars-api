@@ -97,6 +97,7 @@ export const updateCar = async (req, res) => {
       engine: req.body.engine || carToUpdate.engine,
       price: req.body.price || carToUpdate.price,
       isHighlighted: req.body.isHighlighted || carToUpdate.isHighlighted,
+      imageUrl: req.body.imageUrl || carToUpdate.imageUrl,
     },
   })
 

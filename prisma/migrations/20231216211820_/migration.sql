@@ -1,12 +1,14 @@
 -- CreateTable
 CREATE TABLE "Car" (
     "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "brandId" TEXT NOT NULL,
     "model" TEXT NOT NULL,
     "generation" TEXT NOT NULL,
     "engine" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "isHighlighted" BOOLEAN NOT NULL DEFAULT false,
+    "imageUrl" TEXT,
 
     CONSTRAINT "Car_pkey" PRIMARY KEY ("id")
 );

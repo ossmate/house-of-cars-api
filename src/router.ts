@@ -30,7 +30,7 @@ router.post(
   body('engine').exists().isString(),
   body('price').exists().isNumeric(),
   body('isHighlighted').isBoolean().default(false),
-  body('imageUrl').exists().isString().default(''),
+  body('imageUrl').isString().default(''),
   inputErrorsHandler,
   createCar
 )
