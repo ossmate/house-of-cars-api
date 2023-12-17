@@ -10,6 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id String @id @default(uuid())
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  email String @unique
+  username String @unique
+  password String
+
+  cars Car[]
+}
+
 model Car {
   id String @id @default(uuid())
   createdAt DateTime @default(now())
@@ -22,6 +34,9 @@ model Car {
   price Float
   isHighlighted Boolean @default(false)
   imageUrl String?
+
+  belongsToId String @default("ble")
+  belongsTo User @relation(fields: [belongsToId], references: [id])
 
   @@unique([id, brandId])
 }
