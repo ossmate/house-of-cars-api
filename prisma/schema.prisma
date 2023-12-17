@@ -35,7 +35,7 @@ model Car {
   isHighlighted Boolean @default(false)
   imageUrl String?
 
-  belongsToId String @default("ble")
+  belongsToId String
   belongsTo User @relation(fields: [belongsToId], references: [id])
 
   @@unique([id, brandId])

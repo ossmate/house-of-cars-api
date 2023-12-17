@@ -22,31 +22,28 @@ export const createJWT = (user) => {
 }
 
 export const protect = (req, res, next) => {
-  const bearer = req.headers.authorization
+  const bearerHeader = req.headers.authorization
 
-  if (!bearer) {
-    res.status(401)
-    res.json({ message: 'not authorized' })
-    return
+  // Check if the bearer token is not present
+  if (!bearerHeader) {
+    return res.status(401).json({ message: 'Not authorized' })
   }
 
-  const [, token] = bearer.split(' ')
+  // Extract the token
+  const token = bearerHeader.split(' ')[1]
 
+  // Validate the extracted token
   if (!token) {
-    res.status(401)
-    res.json({ message: 'not valid token' })
-    return
+    return res.status(401).json({ message: 'Not valid token' })
   }
 
   try {
-    const user = jwt.verify(token, process.env.JWT_SECRET)
-
-    req.user = user
+    // Verify the token and add the user to the request
+    const decodedUser = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = decodedUser
     next()
-  } catch (e) {
-    console.error(e)
-    res.status(401)
-    res.json({ message: 'not valid token 2' })
-    return
+  } catch (error) {
+    console.error(error)
+    res.status(401).json({ message: 'Not valid token' })
   }
 }
