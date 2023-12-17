@@ -12,20 +12,28 @@ app.use(cors())
 
 app.use(express.json())
 
-app.use('/api', protect, router)
+app.use('/api', router)
 
 app.post('/signup', checkUserExists, signUp)
 
 app.post('/signin', signIn)
 
 app.use((err, _req, res, _next) => {
-  if (err.type === 'auth') {
-    res.status(401).json({ message: 'unauthorized' })
-  } else if (err.type === 'input') {
-    res.status(400).json({ message: 'invalid input' })
-  } else {
-    res.status(500).json({ message: 'something went wrong' })
+  let statusCode = 500
+  let message = 'Something went wrong'
+
+  switch (err.type) {
+    case 'auth':
+      statusCode = 401
+      message = 'Unauthorized'
+      break
+    case 'input':
+      statusCode = 400
+      message = 'Invalid input'
+      break
   }
+
+  res.status(statusCode).json({ message })
 })
 
 export default app

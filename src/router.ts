@@ -15,6 +15,7 @@ import {
   getBrands,
   updateBrand,
 } from './handlers/brands'
+import { protect } from './modules/auth'
 
 const router = Router()
 
@@ -24,6 +25,7 @@ router.get('/cars/:id', getCar)
 
 router.post(
   '/cars',
+  protect,
   body('brandId').exists().isString(),
   body('model').exists().isString(),
   body('generation').exists().isString(),
@@ -35,22 +37,23 @@ router.post(
   createCar
 )
 
-router.delete('/cars/:id', deleteCar)
+router.delete('/cars/:id', protect, deleteCar)
 
-router.put('/cars', updateCar)
+router.put('/cars', protect, updateCar)
 
 router.get('/brands', getBrands)
 
 router.post(
   '/brands',
+  protect,
   body('name').exists().isString(),
   body('imageUrl').exists().isString(),
   inputErrorsHandler,
   createBrand
 )
 
-router.put('/brands', updateBrand)
+router.put('/brands', protect, updateBrand)
 
-router.delete('/brands/:id', deleteBrand)
+router.delete('/brands/:id', protect, deleteBrand)
 
 export default router
