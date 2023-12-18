@@ -42,5 +42,5 @@ export const signIn = async (req, res) => {
   }
 
   const token = createJWT(user)
-  res.json({ data: { token, userId: user?.id } })
+  res.json({ token, userId: user?.id })
 }
