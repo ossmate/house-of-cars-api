@@ -20,6 +20,7 @@ model User {
   password String
 
   cars Car[]
+  favorites Favorite[] @relation(name: "UserFavorites")
 }
 
 model Car {
@@ -38,6 +39,8 @@ model Car {
   belongsToId String
   belongsTo User @relation(fields: [belongsToId], references: [id])
 
+  favoriteBy Favorite[] @relation(name: "CarFavorites")
+
   @@unique([id, brandId])
 }
 
@@ -46,4 +49,14 @@ model Brand {
   name String
   imageUrl String
   cars Car[]
+}
+
+model Favorite {
+  userId String
+  carId  String
+
+  user User @relation(name: "UserFavorites", fields: [userId], references: [id])
+  car  Car  @relation(name: "CarFavorites", fields: [carId], references: [id])
+
+  @@id([userId, carId])
 }
