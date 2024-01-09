@@ -16,6 +16,7 @@ import {
   updateBrand,
 } from './handlers/brands'
 import { protect } from './modules/auth'
+import { getFavorites } from './handlers/favorites'
 
 const router = Router()
 
@@ -55,5 +56,7 @@ router.post(
 router.put('/brands', protect, updateBrand)
 
 router.delete('/brands/:id', protect, deleteBrand)
+
+router.get('/favorites/:id', getFavorites)
 
 export default router
