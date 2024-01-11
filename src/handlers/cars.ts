@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 import prisma from '../db'
 
 interface WhereClause {
@@ -17,12 +18,34 @@ export const getCars = async (req, res) => {
     whereClause.brandId = req.query.brandId
   }
 
-  const data = await prisma.car.findMany({
+  const cars = await prisma.car.findMany({
     where: whereClause,
     include: {
       brand: true,
     },
   })
+
+  const [, jwtToken] = req.headers.authorization.split(' ')
+
+  const { id: userId } = jwt.verify(jwtToken, process.env.JWT_SECRET)
+
+  let favoriteCarIds = []
+  if (userId) {
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        carId: true,
+      },
+    })
+    favoriteCarIds = favorites.map((favorite) => favorite.carId)
+  }
+
+  const data = cars.map((car) => ({
+    ...car,
+    isFavorite: favoriteCarIds.includes(car.id),
+  }))
 
   res.json({ data })
 }
