@@ -26,15 +26,11 @@ export const getCars = async (req, res) => {
   })
 
   let userId
-  try {
-    if (req.headers.authorization) {
-      const [, jwtToken] = req.headers.authorization.split(' ')
-      const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET)
-      userId = decoded.id
-    }
-  } catch (error) {
-    // Handle token validation errors, e.g., token expired, invalid token
-    // If the token is invalid or not present, continue without adding isFavorite
+
+  if (req.headers.authorization) {
+    const [, jwtToken] = req.headers.authorization.split(' ')
+    const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET)
+    userId = decoded.id
   }
 
   let favoriteCarIds = []
