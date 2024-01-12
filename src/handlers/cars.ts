@@ -25,9 +25,17 @@ export const getCars = async (req, res) => {
     },
   })
 
-  const [, jwtToken] = req.headers.authorization.split(' ')
-
-  const { id: userId } = jwt.verify(jwtToken, process.env.JWT_SECRET)
+  let userId
+  try {
+    if (req.headers.authorization) {
+      const [, jwtToken] = req.headers.authorization.split(' ')
+      const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET)
+      userId = decoded.id
+    }
+  } catch (error) {
+    // Handle token validation errors, e.g., token expired, invalid token
+    // If the token is invalid or not present, continue without adding isFavorite
+  }
 
   let favoriteCarIds = []
   if (userId) {
@@ -42,10 +50,12 @@ export const getCars = async (req, res) => {
     favoriteCarIds = favorites.map((favorite) => favorite.carId)
   }
 
-  const data = cars.map((car) => ({
-    ...car,
-    isFavorite: favoriteCarIds.includes(car.id),
-  }))
+  const data = cars.map((car) => {
+    // Add isFavorite property only if userId is present and authenticated
+    return userId
+      ? { ...car, isFavorite: favoriteCarIds.includes(car.id) }
+      : car
+  })
 
   res.json({ data })
 }
