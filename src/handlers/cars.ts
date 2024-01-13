@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import prisma from '../db'
+import { getUserIdFromRequestHeader } from '../helpers/getUserIdFromReuqestHeder/getUserIdFromRequestHeader'
 
 interface WhereClause {
   isHighlighted?: boolean
@@ -8,6 +9,9 @@ interface WhereClause {
 
 export const getCars = async (req, res) => {
   const onlyHighlightedParam = req.query.onlyHighlighted
+  const userId = getUserIdFromRequestHeader(req)
+
+  let favoriteCarIds = []
   let whereClause: WhereClause = {}
 
   if (onlyHighlightedParam === 'true' || onlyHighlightedParam === 'false') {
@@ -25,15 +29,6 @@ export const getCars = async (req, res) => {
     },
   })
 
-  let userId
-
-  if (req.headers.authorization) {
-    const [, jwtToken] = req.headers.authorization.split(' ')
-    const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET)
-    userId = decoded.id
-  }
-
-  let favoriteCarIds = []
   if (userId) {
     const favorites = await prisma.favorite.findMany({
       where: {
