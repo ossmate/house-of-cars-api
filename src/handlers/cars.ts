@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken'
 import prisma from '../db'
 import { getUserIdFromRequestHeader } from '../helpers/getUserIdFromReuqestHeder/getUserIdFromRequestHeader'
 
@@ -52,6 +51,21 @@ export const getCars = async (req, res) => {
 }
 
 export const getCar = async (req, res) => {
+  const userId = getUserIdFromRequestHeader(req)
+  let isFavorite = false
+
+  if (userId) {
+    const favorite = await prisma.favorite.findUnique({
+      where: {
+        userId_carId: {
+          userId,
+          carId: req.params.id,
+        },
+      },
+    })
+    isFavorite = !!favorite
+  }
+
   const car = await prisma.car.findUnique({
     where: {
       id: req.params.id,
@@ -61,7 +75,11 @@ export const getCar = async (req, res) => {
     },
   })
 
-  res.json({ data: car })
+  if (!car) {
+    return res.status(404).json({ message: 'Car not found' })
+  }
+
+  res.json({ data: { ...car, isFavorite: isFavorite } })
 }
 
 export const createCar = async (req, res) => {
