@@ -1,4 +1,5 @@
 import prisma from '../db'
+import { getUserIdFromRequestHeader } from '../helpers/getUserIdFromReuqestHeder/getUserIdFromRequestHeader'
 
 interface WhereClause {
   isHighlighted?: boolean
@@ -7,6 +8,9 @@ interface WhereClause {
 
 export const getCars = async (req, res) => {
   const onlyHighlightedParam = req.query.onlyHighlighted
+  const userId = getUserIdFromRequestHeader(req)
+
+  let favoriteCarIds = []
   let whereClause: WhereClause = {}
 
   if (onlyHighlightedParam === 'true' || onlyHighlightedParam === 'false') {
@@ -17,17 +21,50 @@ export const getCars = async (req, res) => {
     whereClause.brandId = req.query.brandId
   }
 
-  const data = await prisma.car.findMany({
+  const cars = await prisma.car.findMany({
     where: whereClause,
     include: {
       brand: true,
     },
   })
 
+  if (userId) {
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        carId: true,
+      },
+    })
+    favoriteCarIds = favorites.map((favorite) => favorite.carId)
+  }
+
+  const data = cars.map((car) => {
+    return userId
+      ? { ...car, isFavorite: favoriteCarIds.includes(car.id) }
+      : car
+  })
+
   res.json({ data })
 }
 
 export const getCar = async (req, res) => {
+  const userId = getUserIdFromRequestHeader(req)
+  let isFavorite = false
+
+  if (userId) {
+    const favorite = await prisma.favorite.findUnique({
+      where: {
+        userId_carId: {
+          userId,
+          carId: req.params.id,
+        },
+      },
+    })
+    isFavorite = !!favorite
+  }
+
   const car = await prisma.car.findUnique({
     where: {
       id: req.params.id,
@@ -37,7 +74,11 @@ export const getCar = async (req, res) => {
     },
   })
 
-  res.json({ data: car })
+  if (!car) {
+    return res.status(404).json({ message: 'Car not found' })
+  }
+
+  res.json({ data: { ...car, isFavorite: isFavorite } })
 }
 
 export const createCar = async (req, res) => {
@@ -61,9 +102,13 @@ export const createCar = async (req, res) => {
 }
 
 export const deleteCar = async (req, res) => {
-  const cars = await prisma.car.findMany()
+  const carId = req.params.id
 
-  const foundCar = cars.find(({ id }) => id === req.params.id)
+  const foundCar = await prisma.car.findUnique({
+    where: {
+      id: req.params.id,
+    },
+  })
 
   if (!foundCar) {
     return res
@@ -71,9 +116,13 @@ export const deleteCar = async (req, res) => {
       .json({ message: `Car with id ${req.params.id} not found.` })
   }
 
+  await prisma.favorite.deleteMany({
+    where: { carId },
+  })
+
   const car = await prisma.car.delete({
     where: {
-      id: req.params.id,
+      id: carId,
     },
   })
 
