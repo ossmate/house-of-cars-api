@@ -41,7 +41,6 @@ export const getCars = async (req, res) => {
   }
 
   const data = cars.map((car) => {
-    // Add isFavorite property only if userId is present and authenticated
     return userId
       ? { ...car, isFavorite: favoriteCarIds.includes(car.id) }
       : car
@@ -103,9 +102,13 @@ export const createCar = async (req, res) => {
 }
 
 export const deleteCar = async (req, res) => {
-  const cars = await prisma.car.findMany()
+  const carId = req.params.id
 
-  const foundCar = cars.find(({ id }) => id === req.params.id)
+  const foundCar = await prisma.car.findUnique({
+    where: {
+      id: req.params.id,
+    },
+  })
 
   if (!foundCar) {
     return res
@@ -113,9 +116,13 @@ export const deleteCar = async (req, res) => {
       .json({ message: `Car with id ${req.params.id} not found.` })
   }
 
+  await prisma.favorite.deleteMany({
+    where: { carId },
+  })
+
   const car = await prisma.car.delete({
     where: {
-      id: req.params.id,
+      id: carId,
     },
   })
 
