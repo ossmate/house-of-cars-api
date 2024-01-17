@@ -21,7 +21,12 @@ export const getFavoriteCars = async (req, res) => {
     )
   )
 
-  const validCars = cars.filter((car) => car !== null)
+  const validCars = cars
+    .filter((car) => car !== null)
+    .map((car) => ({
+      ...car,
+      isFavorite: true,
+    }))
 
   res.json({ data: validCars })
 }
