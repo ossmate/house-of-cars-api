@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+
 import prisma from '../db'
 import { comparePasswords, createJWT, hashPassword } from '../modules/auth'
 
@@ -42,5 +44,7 @@ export const signIn = async (req, res) => {
   }
 
   const token = createJWT(user)
-  res.json({ token, userId: user?.id })
+  const decodedJwt = jwt.verify(token, process.env.JWT_SECRET)
+
+  res.json({ token, userId: user?.id, iat: decodedJwt.iat })
 }

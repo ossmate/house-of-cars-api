@@ -14,6 +14,7 @@ export const createJWT = (user) => {
     {
       id: user.id,
       username: user.username,
+      iat: Math.floor(Date.now() / 1000),
     },
     process.env.JWT_SECRET,
     { expiresIn: '15m' }
