@@ -46,5 +46,10 @@ export const signIn = async (req, res) => {
   const token = createJWT(user)
   const decodedJwt = jwt.verify(token, process.env.JWT_SECRET)
 
-  res.json({ token, userId: user?.id, iat: decodedJwt.iat })
+  res.json({
+    token,
+    userId: user?.id,
+    iat: decodedJwt.iat,
+    user: { name: user.username, email: user.email },
+  })
 }
