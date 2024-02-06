@@ -61,10 +61,10 @@ router.put('/brands', protect, updateBrand)
 
 router.delete('/brands/:id', protect, deleteBrand)
 
-router.get('/favorites/:id', getFavoriteCars)
+router.get('/favorites/:id', protect, getFavoriteCars)
 
-router.post('/favorites', addToFavorites)
+router.post('/favorites', protect, addToFavorites)
 
-router.delete('/favorites', removeFromFavorites)
+router.delete('/favorites', protect, removeFromFavorites)
 
 export default router
